@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6e447fd8-d522-466c-85a1-17dc4dbb28d4" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1haHbz2KkHHB9tZlUNYFR1FCch4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/webUI/src/main/resources/static" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.44367817" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\codeLean\javaLean\tools\webUI\src\main\resources\static" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\codeLean\javaLean\tools\webUI\src\main\resources\static" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="WebUIApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="webUI" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.timothy.webui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.timothy.webui.WebUIApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.WebUIApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6e447fd8-d522-466c-85a1-17dc4dbb28d4" name="Default Changelist" comment="" />
+      <created>1600242357527</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1600242357527</updated>
+      <workItem from="1600242361680" duration="2831000" />
+      <workItem from="1600329023245" duration="5730000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1493" height="357" key="GridCell.Tab.0.bottom" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.0.center" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.0.left" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.0.right" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.1.bottom" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.1.center" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.1.left" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state width="1493" height="357" key="GridCell.Tab.1.right" timestamp="1600335128852">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="357" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1600335128852" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1600335113859">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1600335113859" />
+    <state x="178" y="72" key="new project wizard" timestamp="1600329279831">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="178" y="72" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1600329279831" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1600329864708">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1600329864708" />
+  </component>
+</project>
