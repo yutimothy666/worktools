@@ -3,3 +3,16 @@ server:
 spring:
   profiles:
     active: dev
+  application:
+    name: web-ui
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+room:
+  schoolId: 3
+  cookiesId: 9F560BFB214612ADEC231CAF1C0AD824
+  dormAjustDataProvider: https://yx.tsp189.com/xyyx/dorm/dorm_ajust_data_provider.shtml?pid=&
+  presortLevel: 0
+  adjustMajor: https://yx.tsp189.com/xyyx/dorm/adjust_major.shtml
+  adjustCancel: https://yx.tsp189.com/xyyx/dorm/adjust_cancel.shtml
