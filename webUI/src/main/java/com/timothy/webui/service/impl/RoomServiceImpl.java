@@ -1,17 +1,23 @@
 package com.timothy.webui.service.impl;
 
-import com.timothy.webui.bean.RoomBean;
+import com.timothy.webui.bean.RoomJSONResult;
+import com.timothy.webui.bean.TableResultRoot;
 import com.timothy.webui.bean.RoomInfo;
 import com.timothy.webui.config.RoomProperties;
 import com.timothy.webui.service.RoomService;
-import com.timothy.webui.utils.RestTemplateUtils;
+import com.timothy.webui.utils.RestTemplateClient;
+import org.apache.poi.util.StringUtil;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 /**
  * @Description:
@@ -22,11 +28,7 @@ import javax.annotation.Resource;
 public class RoomServiceImpl implements RoomService {
 
     @Resource
-    RestTemplateUtils restTemplateUtils;
-
-    @Resource
-    RestTemplate restTemplate;
-
+    RestTemplateClient restTemplateClient;
     @Resource
     RoomProperties roomProperties;
 
@@ -37,59 +39,52 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public String AdjustMajor(Long[] beds, Long facultyId, Long majorId, Long classId) {
-        StringBuilder builder = new StringBuilder();
-        if (beds.length == 1) {
-            builder.append(beds[0]);
-        }
-        if (beds.length > 1) {
-            for (int i = 0; i < beds.length - 1; i++) {
-                builder.append(beds[i]).append(",");
-            }
-            builder.append(beds[beds.length - 1]);
-        }
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("level", String.valueOf(1));
-        params.add("beds", builder.toString());
+        params.add("beds", StringUtil.join(beds, ","));
         params.add("facultyId", String.valueOf(facultyId));
         params.add("majorId", String.valueOf(majorId));
-        if (roomProperties.getPresortLevel() == 1) {
+        if (classId != null) {
             params.add("classId", String.valueOf(classId));
         }
-        HttpEntity<MultiValueMap<String, String>> request = restTemplateUtils.getRequest(params);
-        return restTemplate.postForObject(roomProperties.getAdjustMajor(), request, String.class);
+        return restTemplateClient.postForObjectDefault(roomProperties.getAdjustMajor(), params, String.class);
     }
 
     @Override
     public String AdjustCancel(Long beds) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("beds", String.valueOf(beds));
-        HttpEntity<MultiValueMap<String, String>> request = restTemplateUtils.getRequest(params);
-        return restTemplate.postForObject(roomProperties.getAdjustCancel(), request, String.class);
+        return restTemplateClient.postForObjectDefault(roomProperties.getAdjustCancel(), params, String.class);
     }
 
     @Override
-    public RoomBean DataProvider(Integer page) {
+    public TableResultRoot<RoomJSONResult> DataProvider(Integer page) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("_search", "false");
         params.add("nd", String.valueOf(System.currentTimeMillis()));
-        params.add("rows", "20");
+        params.add("rows", "8000");
         if (page == null) page = 1;
         params.add("page", String.valueOf(page));
         params.add("sidx", "");
         params.add("sord", "asc");
-        HttpEntity<MultiValueMap<String, String>> request = restTemplateUtils.getRequest(params);
-        return restTemplate.postForObject(roomProperties.getDormAjustDataProvider(), request, RoomBean.class);
+        ParameterizedTypeReference<TableResultRoot<RoomJSONResult>> typeReference = new ParameterizedTypeReference<TableResultRoot<RoomJSONResult>>() {
+        };
+        ResponseEntity<TableResultRoot<RoomJSONResult>> rootResponseEntity = restTemplateClient.exchangeDefault(roomProperties.getDormAjustDataProvider(), params, typeReference);
+        if (rootResponseEntity.getStatusCode().is2xxSuccessful()) {
+            TableResultRoot<RoomJSONResult> body = rootResponseEntity.getBody();
+            assert body != null;
+            RoomInfo.putRoomBean(body);
+            return body;
+        }
+        return new TableResultRoot<>();
     }
 
     @Override
-    public synchronized void initRoomInfo() throws InterruptedException {
+    public synchronized Integer initRoomInfo() {
         RoomInfo.destroy();
-        Integer integer = this.GetTotalRoomNum();
-        for (int i = 0; i < integer; i++) {
-            Thread.sleep(300);
-            RoomBean roomBean = this.DataProvider(i);
-            RoomInfo.putRoomBean(roomBean);
-        }
+        TableResultRoot<RoomJSONResult> roomBean = this.DataProvider(0);
+        RoomInfo.putRoomBean(roomBean);
         System.out.println(RoomInfo.getRoomMap());
+        return roomBean.getRecords();
     }
 }

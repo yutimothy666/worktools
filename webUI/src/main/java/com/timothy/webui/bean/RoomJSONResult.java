@@ -12,7 +12,7 @@ import lombok.ToString;
  * @website http://www.bejson.com/java2pojo/
  */
 @ToString
-public class GridModel {
+public class RoomJSONResult {
 
     private String affirm;
     private String affirmStr;

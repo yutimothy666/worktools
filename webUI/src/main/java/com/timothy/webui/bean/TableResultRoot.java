@@ -14,12 +14,12 @@ import java.util.List;
  * @website http://www.bejson.com/java2pojo/
  */
 @ToString
-public class RoomBean {
+public class TableResultRoot<T> {
 
     private String cols;
     private String fileName;
     private int from;
-    private List<GridModel> gridModel;
+    private List<T> gridModel;
     private String oper;
     private int page;
     private int records;
@@ -58,11 +58,11 @@ public class RoomBean {
         return from;
     }
 
-    public void setGridModel(List<GridModel> gridModel) {
+    public void setGridModel(List<T> gridModel) {
         this.gridModel = gridModel;
     }
 
-    public List<GridModel> getGridModel() {
+    public List<T> getGridModel() {
         return gridModel;
     }
 

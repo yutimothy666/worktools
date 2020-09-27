@@ -1,6 +1,7 @@
 package com.timothy.webui.service;
 
-import com.timothy.webui.bean.RoomBean;
+import com.timothy.webui.bean.RoomJSONResult;
+import com.timothy.webui.bean.TableResultRoot;
 
 /**
  * @Description: roomservice
@@ -34,10 +35,10 @@ public interface RoomService {
      */
     String AdjustCancel(Long beds);
 
-    RoomBean DataProvider(Integer page);
+    TableResultRoot<RoomJSONResult> DataProvider(Integer page);
 
     /**
      * 初始化迎新网学生信息
      */
-    void initRoomInfo() throws InterruptedException;
+    Integer initRoomInfo() throws InterruptedException;
 }

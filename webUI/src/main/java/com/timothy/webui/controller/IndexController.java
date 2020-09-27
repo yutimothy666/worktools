@@ -1,8 +1,8 @@
 package com.timothy.webui.controller;
 
-import com.timothy.webui.bean.RoomBean;
+import com.timothy.webui.bean.TableResultRoot;
 import com.timothy.webui.config.RoomProperties;
-import com.timothy.webui.utils.RestTemplateUtils;
+import com.timothy.webui.utils.RestTemplateClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,7 +32,7 @@ public class IndexController {
     @Resource
     RestTemplate restTemplate;
     @Resource
-    RestTemplateUtils restTemplateUtils;
+    RestTemplateClient restTemplateUtils;
 
     @Resource
     RoomProperties roomProperties;
@@ -44,13 +44,14 @@ public class IndexController {
         return "index/index";
     }
 
+    @ResponseBody
     @GetMapping(value = "test")
     public void test(HttpServletResponse response, @RequestParam(value = "page", required = false, defaultValue = "1") String page) throws IOException {
         String url = "https://yx.tsp189.com/xyyx/dorm/dorm_ajust_data_provider.shtml?pid=&";
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("_search", "false");
         params.add("nd", String.valueOf(System.currentTimeMillis()));
-        params.add("rows", "20");
+        params.add("rows", "8000");
         params.add("page", "2");
         params.add("sidx", "");
         params.add("sord", "asc");
@@ -62,23 +63,4 @@ public class IndexController {
         response.getWriter().write(body);
     }
 
-    @ResponseBody
-    @GetMapping(value = "object")
-    public Object object(@RequestParam(value = "page", required = false, defaultValue = "1") String page) throws IOException {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.add("_search", "false");
-        params.add("nd", String.valueOf(System.currentTimeMillis()));
-        params.add("rows", "20");
-        params.add("page", "2");
-        params.add("sidx", "");
-        params.add("sord", "asc");
-        HttpEntity<MultiValueMap<String, String>> request = restTemplateUtils.getRequest(params);
-        RoomBean roomBean = restTemplate.postForObject(roomProperties.getDormAjustDataProvider(), request, RoomBean.class);
-        assert roomBean != null;
-        roomBean.getGridModel().forEach(k -> {
-            roomMap.add(k.getDormAllName(), String.valueOf(k.getId()));
-        });
-        System.out.println(roomMap);
-        return roomBean;
-    }
 }

@@ -1,5 +1,6 @@
 package com.timothy.webui.config;
 
+import org.apache.poi.util.StringUtil;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,5 +17,7 @@ import java.util.stream.IntStream;
 class RoomPropertiesTest {
     public static void main(String[] args) {
         IntStream.range(0, 6).parallel().forEach(System.out::println);
+        String[] a = {"a"};
+        System.out.println(StringUtil.join(a, ","));
     }
 }

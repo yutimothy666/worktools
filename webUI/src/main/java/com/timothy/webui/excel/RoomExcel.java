@@ -2,7 +2,13 @@ package com.timothy.webui.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
+import com.timothy.webui.utils.MyUtils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.poi.util.StringUtil;
+import org.apache.tomcat.util.buf.StringUtils;
 
 import java.io.Serializable;
 import java.util.StringJoiner;
@@ -12,36 +18,33 @@ import java.util.StringJoiner;
  * @Author: timothyyu
  * @Date: 2020/9/21 16:55
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RoomExcel implements Serializable {
-    public RoomExcel() {
-    }
+    @ExcelProperty(value = "校区")
+    private String SQ;
+    @ExcelProperty(value = "楼栋")
+    private String LD;
+    @ExcelProperty(value = "单元")
+    private String DY;
+    @ExcelProperty(value = "楼层")
+    private String LC;
+    @ExcelProperty(value = "寝室")
+    private String QS;
+    @ExcelProperty(value = "床位数")
+    private Integer roomNum;
+    @ExcelProperty(value = "分配床位数")
+    private Integer roomUsed;
+    @ExcelProperty(value = "学院id")
+    private Long facultyId;
+    @ExcelProperty(value = "班级id")
+    private Long classId;
+    @ExcelProperty(value = "专业id")
+    private Long majorId;
 
-    @ExcelProperty(value = "号码")
-    private String code;
-    @ExcelProperty(value = "学校")
-    private String schoolName;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getSchoolName() {
-        return schoolName;
-    }
-
-    public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", RoomExcel.class.getSimpleName() + "[", "]")
-                .add("code='" + code + "'")
-                .add("schoolName='" + schoolName + "'")
-                .toString();
+    public String getRoomName() {
+        return MyUtils.getRoomName(SQ, LD, DY, LC, QS);
     }
 }

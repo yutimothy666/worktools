@@ -2,6 +2,7 @@ package com.timothy.webui.excel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.timothy.webui.bean.RoomInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class RoomExcelListener extends AnalysisEventListener<RoomExcel> {
     @Override
 
     public void invoke(RoomExcel data, AnalysisContext context) {
-        System.out.println(data);
+        RoomInfo.getRoomExcels().add(data);
     }
 
     @Override
