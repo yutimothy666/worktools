@@ -1,9 +1,11 @@
 package com.timothy.webui.service.impl;
 
+import com.timothy.webui.bean.DepartmentBean;
 import com.timothy.webui.bean.RoomJSONResult;
 import com.timothy.webui.bean.TableResultRoot;
 import com.timothy.webui.bean.RoomInfo;
 import com.timothy.webui.config.RoomProperties;
+import com.timothy.webui.service.DepartmentService;
 import com.timothy.webui.service.RoomService;
 import com.timothy.webui.utils.RestTemplateClient;
 import org.apache.poi.util.StringUtil;
@@ -38,14 +40,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String AdjustMajor(Long[] beds, Long facultyId, Long majorId, Long classId) {
+    public String AdjustMajor(Long[] beds, DepartmentBean departmentBean) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("level", String.valueOf(1));
         params.add("beds", StringUtil.join(beds, ","));
-        params.add("facultyId", String.valueOf(facultyId));
-        params.add("majorId", String.valueOf(majorId));
-        if (classId != null) {
-            params.add("classId", String.valueOf(classId));
+        params.add("facultyId", String.valueOf(departmentBean.getFacultyId()));
+        params.add("majorId", String.valueOf(departmentBean.getMajorId()));
+        if (departmentBean.getClassId() != null) {
+            params.add("classId", String.valueOf(departmentBean.getClassId()));
         }
         return restTemplateClient.postForObjectDefault(roomProperties.getAdjustMajor(), params, String.class);
     }

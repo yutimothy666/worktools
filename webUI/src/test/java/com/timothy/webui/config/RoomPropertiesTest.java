@@ -1,5 +1,6 @@
 package com.timothy.webui.config;
 
+import lombok.Data;
 import org.apache.poi.util.StringUtil;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,5 +20,17 @@ class RoomPropertiesTest {
         IntStream.range(0, 6).parallel().forEach(System.out::println);
         String[] a = {"a"};
         System.out.println(StringUtil.join(a, ","));
+        OK ok = new OK();
+        setA(ok);
+        System.out.println("ok.getAnInt() = " + ok.getAnInt());
     }
+
+    public static void setA(OK ok) {
+        ok.setAnInt(5);
+    }
+}
+
+@Data
+class OK {
+    private int anInt;
 }

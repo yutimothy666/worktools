@@ -9,6 +9,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @Description:
@@ -34,6 +35,10 @@ public class RestTemplateClient {
 
     public <T> ResponseEntity<T> exchangeDefault(String url, MultiValueMap<String, String> params, ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(url, HttpMethod.POST, getDefaultHttpEntity(params), responseType);
+    }
+
+    public <T> ResponseEntity<T> exchangeDefault(String url, MultiValueMap<String, String> params, ParameterizedTypeReference<T> responseType, Map<String, ?> uriVariables) {
+        return restTemplate.exchange(url, HttpMethod.POST, getDefaultHttpEntity(params), responseType, uriVariables);
     }
 
     public <T> T postForObjectDefault(String url, MultiValueMap<String, String> params, Class<T> responseType) {

@@ -1,5 +1,6 @@
 package com.timothy.webui.service;
 
+import com.timothy.webui.bean.DepartmentBean;
 import com.timothy.webui.bean.RoomJSONResult;
 import com.timothy.webui.bean.TableResultRoot;
 
@@ -25,7 +26,7 @@ public interface RoomService {
      * @param classId   班级id
      * @return "ok'
      */
-    String AdjustMajor(Long[] beds, Long facultyId, Long majorId, Long classId);
+    String AdjustMajor(Long[] beds, DepartmentBean departmentBean);
 
     /**
      * 取消床位预分

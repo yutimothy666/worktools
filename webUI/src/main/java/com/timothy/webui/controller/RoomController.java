@@ -2,13 +2,19 @@ package com.timothy.webui.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.timothy.webui.bean.DepartmentBean;
+import com.timothy.webui.bean.DepartmentInfo;
 import com.timothy.webui.bean.RoomInfo;
 import com.timothy.webui.bean.RoomRecode;
+import com.timothy.webui.config.AjaxResult;
 import com.timothy.webui.excel.RoomExcel;
 import com.timothy.webui.excel.RoomExcelListener;
+import com.timothy.webui.service.DepartmentService;
 import com.timothy.webui.service.RoomService;
+import com.timothy.webui.utils.MyUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.poi.util.StringUtil;
+import org.mockito.internal.matchers.Null;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +39,9 @@ import java.util.List;
 public class RoomController {
     @Resource
     RoomService roomService;
+
+    @Resource
+    DepartmentService departmentService;
 
     @Resource
     RoomInfo roomInfo;
@@ -71,6 +80,7 @@ public class RoomController {
             EasyExcel.read(file.getInputStream(), RoomExcel.class, new RoomExcelListener()).sheet(0).doRead();
             List<RoomExcel> roomExcels = RoomInfo.getRoomExcels();
             roomService.initRoomInfo();
+            departmentService.InitDepartmentInfo();
             List<String> roomChangeDetail = new ArrayList<>();
             for (RoomExcel roomExcel : roomExcels) {
                 if (roomExcel.getRoomNum() - roomExcel.getRoomUsed() > 0) {
@@ -89,7 +99,13 @@ public class RoomController {
                     }
                     Thread.sleep(200);
                     roomChangeDetail.add(roomExcel.getRoomName() + "移动了" + getNum + "间房间");
-                    roomService.AdjustMajor(roomList, roomExcel.getFacultyId(), roomExcel.getMajorId(), roomExcel.getClassId());
+                    DepartmentBean departmentBean = new DepartmentBean();
+                    departmentBean.setClassCode(roomExcel.getClassCode());
+                    departmentBean.setMajorName(roomExcel.getMajorName());
+
+                    departmentService.CreateDepartmentBean(departmentBean);//组装id
+
+                    roomService.AdjustMajor(roomList, departmentBean);
                     changeRoomNum++;
                 }
             }
@@ -127,5 +143,19 @@ public class RoomController {
         response.setContentType("application/form-data");
         response.setHeader("ok", "ok");
         response.setCharacterEncoding("utf-8");
+    }
+
+    @ResponseBody
+    @GetMapping("/department")
+    public AjaxResult department(@RequestParam(value = "classCode", required = false, defaultValue = "") String classCode, @RequestParam(value = "majorName", required = false, defaultValue = "") String majorName) {
+        AjaxResult ajaxResult = departmentService.InitDepartmentInfo();
+        if (!MyUtils.isNotEmpty(classCode) && !MyUtils.isNotEmpty(majorName)) {
+            return AjaxResult.success(DepartmentInfo.getDepartmentInfo());
+        }
+        DepartmentBean departmentBean = new DepartmentBean();
+        departmentBean.setMajorName(majorName);
+        departmentBean.setClassCode(classCode);
+        departmentService.CreateDepartmentBean(departmentBean);
+        return AjaxResult.success(departmentBean);
     }
 }

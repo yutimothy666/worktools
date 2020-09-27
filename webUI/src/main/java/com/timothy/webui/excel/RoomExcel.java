@@ -1,17 +1,13 @@
 package com.timothy.webui.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.timothy.webui.utils.MyUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.poi.util.StringUtil;
-import org.apache.tomcat.util.buf.StringUtils;
 
 import java.io.Serializable;
-import java.util.StringJoiner;
 
 /**
  * @Description: excel
@@ -37,12 +33,10 @@ public class RoomExcel implements Serializable {
     private Integer roomNum;
     @ExcelProperty(value = "分配床位数")
     private Integer roomUsed;
-    @ExcelProperty(value = "学院id")
-    private Long facultyId;
-    @ExcelProperty(value = "班级id")
-    private Long classId;
-    @ExcelProperty(value = "专业id")
-    private Long majorId;
+    @ExcelProperty(value = "班级Code")
+    private String classCode;
+    @ExcelProperty(value = "专业名称")
+    private String majorName;
 
     public String getRoomName() {
         return MyUtils.getRoomName(SQ, LD, DY, LC, QS);
