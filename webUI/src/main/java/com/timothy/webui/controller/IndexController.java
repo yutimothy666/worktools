@@ -30,9 +30,7 @@ public class IndexController {
     private static final MultiValueMap<String, String> roomMap = new LinkedMultiValueMap<String, String>();
 
     @Resource
-    RestTemplate restTemplate;
-    @Resource
-    RestTemplateClient restTemplateUtils;
+    RestTemplateClient restTemplateClient;
 
     @Resource
     RoomProperties roomProperties;
@@ -55,8 +53,7 @@ public class IndexController {
         params.add("page", "2");
         params.add("sidx", "");
         params.add("sord", "asc");
-        HttpEntity<MultiValueMap<String, String>> entity = restTemplateUtils.getRequest(params);
-        String body = restTemplate.postForObject(url, entity, String.class);
+        String body = restTemplateClient.postForObjectDefault(url, params, String.class);
         System.out.println(body);
         assert body != null;
         response.setContentType("application/json;charset=UTF-8");

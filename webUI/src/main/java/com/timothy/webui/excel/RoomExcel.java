@@ -33,7 +33,7 @@ public class RoomExcel implements Serializable {
     private Integer roomNum;
     @ExcelProperty(value = "分配床位数")
     private Integer roomUsed;
-    @ExcelProperty(value = "班级Code")
+    @ExcelProperty(value = "班级编码")
     private String classCode;
     @ExcelProperty(value = "专业名称")
     private String majorName;

@@ -25,14 +25,6 @@ public class RestTemplateClient {
     @Resource
     private RestTemplate restTemplate;
 
-    public HttpEntity<MultiValueMap<String, String>> getRequest(MultiValueMap<String, String> params) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        MediaType mediaType = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
-        httpHeaders.setContentType(mediaType);
-        httpHeaders.add("Cookie", "JSESSIONID=" + roomProperties.getCookiesId() + "; dormitory_login=false; collegeId=" + roomProperties.getSchoolId());
-        return new HttpEntity<>(params, httpHeaders);
-    }
-
     public <T> ResponseEntity<T> exchangeDefault(String url, MultiValueMap<String, String> params, ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(url, HttpMethod.POST, getDefaultHttpEntity(params), responseType);
     }

@@ -40,15 +40,16 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String AdjustMajor(Long[] beds, DepartmentBean departmentBean) {
+    public String AdjustMajor(List<String> beds, DepartmentBean departmentBean) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("level", String.valueOf(1));
-        params.add("beds", StringUtil.join(beds, ","));
+        params.add("beds", String.join(",", beds));
         params.add("facultyId", String.valueOf(departmentBean.getFacultyId()));
         params.add("majorId", String.valueOf(departmentBean.getMajorId()));
         if (departmentBean.getClassId() != null) {
             params.add("classId", String.valueOf(departmentBean.getClassId()));
         }
+        System.out.println("请求参数= " + params);
         return restTemplateClient.postForObjectDefault(roomProperties.getAdjustMajor(), params, String.class);
     }
 

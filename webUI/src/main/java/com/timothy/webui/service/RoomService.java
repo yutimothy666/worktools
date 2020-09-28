@@ -4,6 +4,8 @@ import com.timothy.webui.bean.DepartmentBean;
 import com.timothy.webui.bean.RoomJSONResult;
 import com.timothy.webui.bean.TableResultRoot;
 
+import java.util.List;
+
 /**
  * @Description: roomservice
  * @Author: timothyyu
@@ -26,7 +28,7 @@ public interface RoomService {
      * @param classId   班级id
      * @return "ok'
      */
-    String AdjustMajor(Long[] beds, DepartmentBean departmentBean);
+    String AdjustMajor(List<String> beds, DepartmentBean departmentBean);
 
     /**
      * 取消床位预分

@@ -41,7 +41,7 @@ public class RoomInfo {
 
     public synchronized static void putRoomBean(TableResultRoot<RoomJSONResult> roomBean) {
         roomBean.getGridModel().forEach(k -> {
-            roomMap.add(k.getDormAllName().replace(" ", ""), new RoomRecode(k.getId(), false));
+            roomMap.add(k.getDormAllName().replace(" ", ""), new RoomRecode(String.valueOf(k.getId()), false));
         });
     }
 }

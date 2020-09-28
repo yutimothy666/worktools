@@ -11,7 +11,7 @@ spring:
       max-request-size: 100MB
 room:
   schoolId: 158
-  cookiesId: A1879359854E225C1A5FDD65F4420F45
+  cookiesId: 60E274808AE196EDE88BC319C62FA35E
   dormAjustDataProvider: https://yx.tsp189.com/xyyx/dorm/dorm_ajust_data_provider.shtml?pid=&
   presortLevel: 0
   adjustMajor: https://yx.tsp189.com/xyyx/dorm/adjust_major.shtml

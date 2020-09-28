@@ -14,45 +14,8 @@ import java.util.StringJoiner;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class RoomRecode {
-    private Long id;
+    private String id;
     private Boolean isUse;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Boolean getUse() {
-        return isUse;
-    }
-
-    public void setUse(Boolean use) {
-        isUse = use;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RoomRecode that = (RoomRecode) o;
-        return id.equals(that.id) &&
-                isUse.equals(that.isUse);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, isUse);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", RoomRecode.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("isUse=" + isUse)
-                .toString();
-    }
 }

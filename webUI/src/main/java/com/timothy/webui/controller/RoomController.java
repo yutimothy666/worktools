@@ -7,14 +7,13 @@ import com.timothy.webui.bean.DepartmentInfo;
 import com.timothy.webui.bean.RoomInfo;
 import com.timothy.webui.bean.RoomRecode;
 import com.timothy.webui.config.AjaxResult;
+import com.timothy.webui.config.RoomProperties;
 import com.timothy.webui.excel.RoomExcel;
 import com.timothy.webui.excel.RoomExcelListener;
 import com.timothy.webui.service.DepartmentService;
 import com.timothy.webui.service.RoomService;
 import com.timothy.webui.utils.MyUtils;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.poi.util.StringUtil;
-import org.mockito.internal.matchers.Null;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,6 +40,9 @@ public class RoomController {
 
     @Resource
     DepartmentService departmentService;
+
+    @Resource
+    RoomProperties roomProperties;
 
     @Resource
     RoomInfo roomInfo;
@@ -71,26 +72,27 @@ public class RoomController {
 
     @ResponseBody
     @PostMapping("/")
-    public Object post(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException, InterruptedException {
+    public AjaxResult post(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException, InterruptedException {
         Integer changeRoomNum = 0;
         HashMap<String, Object> object = new HashMap<>();
         System.out.println(file.getOriginalFilename());
+        List<String> roomChangeDetail = new ArrayList<>();
         if (!file.isEmpty()) {
             object.put("msg", file.getOriginalFilename());
             EasyExcel.read(file.getInputStream(), RoomExcel.class, new RoomExcelListener()).sheet(0).doRead();
             List<RoomExcel> roomExcels = RoomInfo.getRoomExcels();
+            roomExcels.forEach(System.out::println);
             roomService.initRoomInfo();
             departmentService.InitDepartmentInfo();
-            List<String> roomChangeDetail = new ArrayList<>();
             for (RoomExcel roomExcel : roomExcels) {
                 if (roomExcel.getRoomNum() - roomExcel.getRoomUsed() > 0) {
                     List<RoomRecode> roomRecodes = RoomInfo.getRoomMap().get(roomExcel.getRoomName());
                     Integer getNum = 0;
-                    Long[] roomList = new Long[9];
+                    ArrayList<String> roomList = new ArrayList<>();
                     for (RoomRecode roomRecode : roomRecodes) {
-                        if (!roomRecode.getUse()) {
-                            roomList[getNum] = roomRecode.getId();
-                            roomRecode.setUse(true);
+                        if (!roomRecode.getIsUse()) {
+                            roomList.add(roomRecode.getId());
+                            roomRecode.setIsUse(true);
                             getNum++;
                         }
                         if (getNum.equals(roomExcel.getRoomUsed())) {
@@ -98,25 +100,34 @@ public class RoomController {
                         }
                     }
                     Thread.sleep(200);
-                    roomChangeDetail.add(roomExcel.getRoomName() + "移动了" + getNum + "间房间");
+
                     DepartmentBean departmentBean = new DepartmentBean();
+                    System.out.println("roomExcel.getClassCode() = " + roomExcel.getClassCode());
+                    System.out.println("roomExcel.getMajorName() = " + roomExcel.getMajorName());
                     departmentBean.setClassCode(roomExcel.getClassCode());
                     departmentBean.setMajorName(roomExcel.getMajorName());
-
+                    System.out.println("departmentBeanBefore = " + departmentBean);
                     departmentService.CreateDepartmentBean(departmentBean);//组装id
+                    System.out.println("departmentBeanAfter = " + departmentBean);
 
-                    roomService.AdjustMajor(roomList, departmentBean);
+                    String result = roomService.AdjustMajor(roomList, departmentBean);
+                    String msg = roomExcel.getRoomName() + "移动了" + getNum + "间房间 " + "操作结果：" + result;
+                    System.out.println("msg = " + msg);
+                    roomChangeDetail.add(msg);
                     changeRoomNum++;
                 }
             }
             object.put("num", String.valueOf(changeRoomNum));
             object.put("detail", roomChangeDetail);
         } else {
-            object.put("msg", "error");
-            object.put("num", String.valueOf(0));
-            object.put("detail", null);
+            roomChangeDetail.add("test1");
+            roomChangeDetail.add("test1");
+            roomChangeDetail.add("test1");
+            object.put("num", String.valueOf(changeRoomNum));
+            object.put("detail", roomChangeDetail);
+            return AjaxResult.toAjax("200", "提交文件为空", object);
         }
-        return object;
+        return AjaxResult.success(object);
     }
 
     @ResponseBody
@@ -157,5 +168,26 @@ public class RoomController {
         departmentBean.setClassCode(classCode);
         departmentService.CreateDepartmentBean(departmentBean);
         return AjaxResult.success(departmentBean);
+    }
+
+    @ResponseBody
+    @GetMapping("/test")
+    public AjaxResult test(String bedsId, String classCode) {
+        System.out.println("bedsId = " + bedsId);
+        System.out.println("classCode = " + classCode);
+        DepartmentBean departmentBean = new DepartmentBean();
+        departmentBean.setClassCode(classCode);
+        departmentService.InitDepartmentInfo();
+        departmentService.CreateDepartmentBean(departmentBean);
+        return AjaxResult.success(roomService.AdjustMajor(Arrays.asList(bedsId.split(",")), departmentBean));
+    }
+
+    @ResponseBody
+    @GetMapping("/properties")
+    public AjaxResult properties(String key) {
+        if (MyUtils.isNotEmpty(key)) {
+            roomProperties.setCookiesId(key);
+        }
+        return AjaxResult.success(roomProperties.getCookiesId());
     }
 }
