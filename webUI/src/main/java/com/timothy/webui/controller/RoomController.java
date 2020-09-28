@@ -16,6 +16,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.UnknownContentTypeException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -69,7 +70,7 @@ public class RoomController {
     @ResponseBody
     @PostMapping("/")
     public AjaxResult post(@RequestParam(value = "file", required = false) MultipartFile file, WebCookiesInfo info) throws
-            IOException, InterruptedException {
+            IOException, InterruptedException, UnknownContentTypeException, NullPointerException {
         webCookiesInfo.setAll(info);
         Integer changeRoomNum = 0;
         HashMap<String, Object> object = new HashMap<>();

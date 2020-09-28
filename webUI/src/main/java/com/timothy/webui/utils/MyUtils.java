@@ -1,6 +1,12 @@
 package com.timothy.webui.utils;
 
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.lang.NonNull;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Description:
@@ -20,5 +26,17 @@ public class MyUtils {
             }
         }
         return name.toString();
+    }
+
+    public static HttpServletResponse getResponse() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert servletRequestAttributes != null;
+        return servletRequestAttributes.getResponse();
+    }
+
+    public static HttpServletRequest getRequest() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert servletRequestAttributes != null;
+        return servletRequestAttributes.getRequest();
     }
 }

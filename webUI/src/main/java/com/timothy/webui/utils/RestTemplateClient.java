@@ -1,13 +1,18 @@
 package com.timothy.webui.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.timothy.webui.config.AjaxResult;
 import com.timothy.webui.config.WebCookiesInfo;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.UnknownContentTypeException;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 /**

@@ -25,8 +25,14 @@ class RoomPropertiesTest {
         System.out.println("ok.getAnInt() = " + ok.getAnInt());
     }
 
-    public static void setA(OK ok) {
+    public static Integer setA(OK ok) {
         ok.setAnInt(5);
+        try {
+            return 3;
+        } finally {
+            System.out.println("1 = " + 1);
+        }
+
     }
 }
 
