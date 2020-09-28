@@ -1,10 +1,9 @@
 package com.timothy.webui.utils;
 
-import com.timothy.webui.config.RoomProperties;
+import com.timothy.webui.config.WebCookiesInfo;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,10 +19,18 @@ import java.util.Map;
 public class RestTemplateClient {
 
     @Resource
-    private RoomProperties roomProperties;
+    private WebCookiesInfo webCookiesInfo;
 
     @Resource
     private RestTemplate restTemplate;
+
+    public HttpEntity<MultiValueMap<String, String>> getRequest(MultiValueMap<String, String> params) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        MediaType mediaType = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
+        httpHeaders.setContentType(mediaType);
+        httpHeaders.add("Cookie", "JSESSIONID=" + webCookiesInfo.getCookiesId() + "; dormitory_login=false; collegeId=" + webCookiesInfo.getSchoolId());
+        return new HttpEntity<>(params, httpHeaders);
+    }
 
     public <T> ResponseEntity<T> exchangeDefault(String url, MultiValueMap<String, String> params, ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(url, HttpMethod.POST, getDefaultHttpEntity(params), responseType);
@@ -41,7 +48,7 @@ public class RestTemplateClient {
         HttpHeaders httpHeaders = new HttpHeaders();
         MediaType mediaType = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
         httpHeaders.setContentType(mediaType);
-        httpHeaders.add("Cookie", "JSESSIONID=" + roomProperties.getCookiesId() + "; dormitory_login=false; collegeId=" + roomProperties.getSchoolId());
+        httpHeaders.add("Cookie", "JSESSIONID=" + webCookiesInfo.getCookiesId() + "; dormitory_login=false; collegeId=" + webCookiesInfo.getSchoolId());
         return new HttpEntity<>(params, httpHeaders);
     }
 }

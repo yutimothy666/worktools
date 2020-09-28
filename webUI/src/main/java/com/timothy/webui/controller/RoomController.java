@@ -1,13 +1,12 @@
 package com.timothy.webui.controller;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.support.ExcelTypeEnum;
 import com.timothy.webui.bean.DepartmentBean;
 import com.timothy.webui.bean.DepartmentInfo;
 import com.timothy.webui.bean.RoomInfo;
 import com.timothy.webui.bean.RoomRecode;
 import com.timothy.webui.config.AjaxResult;
-import com.timothy.webui.config.RoomProperties;
+import com.timothy.webui.config.WebCookiesInfo;
 import com.timothy.webui.excel.RoomExcel;
 import com.timothy.webui.excel.RoomExcelListener;
 import com.timothy.webui.service.DepartmentService;
@@ -42,10 +41,7 @@ public class RoomController {
     DepartmentService departmentService;
 
     @Resource
-    RoomProperties roomProperties;
-
-    @Resource
-    RoomInfo roomInfo;
+    WebCookiesInfo webCookiesInfo;
 
     @ResponseBody
     @GetMapping("list")
@@ -72,7 +68,9 @@ public class RoomController {
 
     @ResponseBody
     @PostMapping("/")
-    public AjaxResult post(@RequestParam(value = "file", required = false) MultipartFile file) throws IOException, InterruptedException {
+    public AjaxResult post(@RequestParam(value = "file", required = false) MultipartFile file, WebCookiesInfo info) throws
+            IOException, InterruptedException {
+        webCookiesInfo.setAll(info);
         Integer changeRoomNum = 0;
         HashMap<String, Object> object = new HashMap<>();
         System.out.println(file.getOriginalFilename());
@@ -86,7 +84,7 @@ public class RoomController {
             departmentService.InitDepartmentInfo();
             for (RoomExcel roomExcel : roomExcels) {
                 if (roomExcel.getRoomNum() - roomExcel.getRoomUsed() > 0) {
-                    List<RoomRecode> roomRecodes = RoomInfo.getRoomMap().get(roomExcel.getRoomName());
+                    List<RoomRecode> roomRecodes = RoomInfo.getRoomMap().get(roomExcel.getRoomName().trim());
                     Integer getNum = 0;
                     ArrayList<String> roomList = new ArrayList<>();
                     for (RoomRecode roomRecode : roomRecodes) {
@@ -104,8 +102,8 @@ public class RoomController {
                     DepartmentBean departmentBean = new DepartmentBean();
                     System.out.println("roomExcel.getClassCode() = " + roomExcel.getClassCode());
                     System.out.println("roomExcel.getMajorName() = " + roomExcel.getMajorName());
-                    departmentBean.setClassCode(roomExcel.getClassCode());
-                    departmentBean.setMajorName(roomExcel.getMajorName());
+                    departmentBean.setClassCode(roomExcel.getClassCode().trim());
+                    departmentBean.setMajorName(roomExcel.getMajorName().trim());
                     System.out.println("departmentBeanBefore = " + departmentBean);
                     departmentService.CreateDepartmentBean(departmentBean);//组装id
                     System.out.println("departmentBeanAfter = " + departmentBean);
@@ -158,7 +156,8 @@ public class RoomController {
 
     @ResponseBody
     @GetMapping("/department")
-    public AjaxResult department(@RequestParam(value = "classCode", required = false, defaultValue = "") String classCode, @RequestParam(value = "majorName", required = false, defaultValue = "") String majorName) {
+    public AjaxResult department(@RequestParam(value = "classCode", required = false, defaultValue = "") String
+                                         classCode, @RequestParam(value = "majorName", required = false, defaultValue = "") String majorName) {
         AjaxResult ajaxResult = departmentService.InitDepartmentInfo();
         if (!MyUtils.isNotEmpty(classCode) && !MyUtils.isNotEmpty(majorName)) {
             return AjaxResult.success(DepartmentInfo.getDepartmentInfo());
@@ -171,8 +170,15 @@ public class RoomController {
     }
 
     @ResponseBody
+    @GetMapping("/webInfo")
+    public AjaxResult webInfo(WebCookiesInfo info) {
+        webCookiesInfo.setAll(info);
+        return AjaxResult.success(webCookiesInfo);
+    }
+
+    @ResponseBody
     @GetMapping("/test")
-    public AjaxResult test(String bedsId, String classCode) {
+    public AjaxResult test2(String bedsId, String classCode) {
         System.out.println("bedsId = " + bedsId);
         System.out.println("classCode = " + classCode);
         DepartmentBean departmentBean = new DepartmentBean();
@@ -180,14 +186,5 @@ public class RoomController {
         departmentService.InitDepartmentInfo();
         departmentService.CreateDepartmentBean(departmentBean);
         return AjaxResult.success(roomService.AdjustMajor(Arrays.asList(bedsId.split(",")), departmentBean));
-    }
-
-    @ResponseBody
-    @GetMapping("/properties")
-    public AjaxResult properties(String key) {
-        if (MyUtils.isNotEmpty(key)) {
-            roomProperties.setCookiesId(key);
-        }
-        return AjaxResult.success(roomProperties.getCookiesId());
     }
 }
