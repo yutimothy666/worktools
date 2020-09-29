@@ -1,7 +1,6 @@
 package com.timothy.webui.utils;
 
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class MyUtils {
     public static boolean isNotEmpty(String s) {
-        return Strings.isNotEmpty(s) && Strings.isNotBlank(s);
+        return Strings.isNotBlank(s);
     }
 
     public static String getRoomName(String... args) {
