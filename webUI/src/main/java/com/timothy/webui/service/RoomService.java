@@ -20,13 +20,9 @@ public interface RoomService {
     Integer GetTotalRoomNum();
 
     /**
-     * 更改床位预分班级或者专业
-     *
-     * @param beds      床位id
-     * @param facultyId 院系id
-     * @param majorId   专业id
-     * @param classId   班级id
-     * @return "ok'
+     * @param beds           床位id
+     * @param departmentBean 床位信息
+     * @return 操作结果
      */
     String AdjustMajor(List<String> beds, DepartmentBean departmentBean);
 

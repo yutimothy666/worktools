@@ -1,7 +1,9 @@
 package com.timothy.webui.config;
 
-import com.timothy.webui.utils.MyUtils;
+import com.timothy.webui.utils.WebUIUtils;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,14 +14,17 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class WebCookiesInfo {
-    private String schoolId = "3";
-    private String cookiesId = "A1879359854E225C1A5FDD65F4420F45";
+    private String schoolId = null;
+    private String cookiesId = null;
+    private static final Logger logger = LoggerFactory.getLogger(WebCookiesInfo.class);
 
     public void setAll(WebCookiesInfo webCookiesInfo) {
-        if (MyUtils.isNotEmpty(webCookiesInfo.getCookiesId())) {
+        if (WebUIUtils.isNotEmpty(webCookiesInfo.getCookiesId())) {
+            logger.info("set CookiesId", cookiesId);
             this.setCookiesId(webCookiesInfo.getCookiesId().trim());
         }
-        if (MyUtils.isNotEmpty(webCookiesInfo.getSchoolId())) {
+        if (WebUIUtils.isNotEmpty(webCookiesInfo.getSchoolId())) {
+            logger.info("set schoolId", schoolId);
             this.setSchoolId(webCookiesInfo.getSchoolId().trim());
         }
     }

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Author: timothyyu
  * @Date: 2020/9/24 12:35
  */
-public class MyUtils {
+public class WebUIUtils {
     public static boolean isNotEmpty(String s) {
         return Strings.isNotBlank(s);
     }

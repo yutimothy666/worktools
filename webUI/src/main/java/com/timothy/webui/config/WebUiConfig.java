@@ -1,5 +1,6 @@
 package com.timothy.webui.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
@@ -22,6 +24,7 @@ import java.util.List;
  */
 
 @Configuration
+@MapperScan("com.timothy.webui.mapper")
 public class WebUiConfig implements WebMvcConfigurer {
     @Resource
     private RestTemplateBuilder restTemplateBuilder;
@@ -44,4 +47,8 @@ public class WebUiConfig implements WebMvcConfigurer {
         converters.add(responseBodyConverter());
     }
 
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
+    }
 }

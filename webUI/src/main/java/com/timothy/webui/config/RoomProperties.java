@@ -34,4 +34,5 @@ public class RoomProperties {
     private Integer presortLevel;
 
     private String adjustCancel;
+    private String baseUrl;
 }

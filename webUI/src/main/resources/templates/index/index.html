@@ -4,16 +4,121 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" th:href="@{/bootstrap-3.3.7/css/bootstrap.min.css}">
+    <style>
+        #message {
+            width: auto;
+            height: auto;
+            background: #8cffa4;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            display: block;
+            background: #2aabd2;
+            border: yellow solid 2px;
+        }
+
+        #show1 {
+            display: grid;
+            grid-template: 1fr 2fr 1fr / 1fr 2fr 1fr;
+            width: 50%;
+            height: 500px;
+            grid-gap: 10px 10px;
+            grid-template-areas: "a b c" "d e f" "c1 c2 c3";
+            place-items: center center;
+            place-content: space-between space-between;
+            grid-auto-rows: 1fr;
+            grid-auto-columns: 1fr;
+            grid-auto-flow: dense;
+        }
+
+        .color:nth-of-type(1) {
+            grid-column-start: span 2;
+        }
+
+        .color:nth-of-type(2) {
+            grid-column-start: span 2;
+        }
+
+        .color:nth-of-type(3) {
+            grid-row-start: 1;
+            grid-row-end: 2;
+        }
+
+        .color {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 <h1 th:text="${ok}"></h1>
-<script src="/static/jquery/jquery-3.5.1.min.js" th:src="@{/static/jquery/jquery-3.5.1.min.js}"></script>
+<div id="message">
+    <ul id="message-item">
+        <li>{{message}}</li>
+        <li>1</li>
+        <li>1</li>
+    </ul>
+</div>
+<form>
+    <input id="message-text" type="text">
+    <input type="button" onclick="sendMessage()">
+</form>
+<div id="show1">
+    <div class="color"><p>1</p></div>
+    <div class="color"><p>2</p></div>
+    <div class="color"><p>3</p></div>
+    <div class="color"><p>1</p></div>
+    <div class="color"><p>2</p></div>
+    <div class="color"><p>3</p></div>
+    <div class="color"><p>1</p></div>
+    <div class="color"><p>2</p></div>
+    <div class="color"><p>3</p></div>
+</div>
+
+<script src="/jquery/jquery-3.5.1.min.js" th:src="@{/jquery/jquery-3.5.1.min.js}"></script>
+<script src="/vue/vue.js" th:src="@{/vue/vue.js}"></script>
 <script th:src="@{/bootstrap-3.3.7/js/bootstrap.js}"></script>
 <script>
-    let webSocket = new WebSocket("wss://echo.websocket.org");
-    webSocket.onopen = function (evt) {
-        evt.send("")
-    };
+    new Vue({
+        el: '#message',
+        data: {
+            message: "ok"
+        }
+    })
+
+    function randomColor() {
+        var color = "";
+        for (var i = 0; i < 6; i++) {
+            color += (Math.random() * 16 | 0).toString(16);
+        }
+        return "#" + color;
+    }
+
+    for (let element of document.getElementsByClassName("color")) {
+        element.style.background = randomColor();
+        element.style.borderColor = randomColor();
+        element.style.borderStyle = "solid";
+        element.style.borderWidth = "2px";
+    }
+    let webSocket;
+
+    function init() {
+        webSocket = new WebSocket("ws://127.0.0.1/webSocket/23");
+        webSocket.onmessage = function (event) {
+            let element = document.createElement("li");
+            element.innerText = event.data;
+            document.getElementById("message-item").appendChild(element);
+        };
+    }
+
+    function sendMessage() {
+        var nodeValue = document.getElementById("message-text").nodeValue;
+        webSocket.send(nodeValue);
+    }
 </script>
 </body>
 </html>

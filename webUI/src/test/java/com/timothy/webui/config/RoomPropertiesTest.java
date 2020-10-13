@@ -2,11 +2,7 @@ package com.timothy.webui.config;
 
 import lombok.Data;
 import org.apache.poi.util.StringUtil;
-import org.junit.Test;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 import java.util.stream.IntStream;
 
 

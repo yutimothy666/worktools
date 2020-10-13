@@ -1,7 +1,7 @@
 package com.timothy.webui.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.timothy.webui.utils.MyUtils;
+import com.timothy.webui.utils.WebUIUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +39,6 @@ public class RoomExcel implements Serializable {
     private String majorName;
 
     public String getRoomName() {
-        return MyUtils.getRoomName(SQ, LD, DY, LC, QS);
+        return WebUIUtils.getRoomName(SQ, LD, DY, LC, QS);
     }
 }

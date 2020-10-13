@@ -1,5 +1,6 @@
 package com.timothy.webui;
 
+import com.timothy.webui.config.AjaxResult;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
@@ -27,11 +28,8 @@ public class WebUIApplication {
 
         @ResponseBody
         @RequestMapping(value = "/test", method = {RequestMethod.GET, RequestMethod.POST})
-        public Object test() {
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("code", "200");
-            map.put("msg", "ok");
-            return map;
+        public AjaxResult test() {
+            return AjaxResult.success("test");
         }
     }
 }

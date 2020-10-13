@@ -6,8 +6,11 @@ import com.timothy.webui.bean.DepartmentTableJsonResult;
 import com.timothy.webui.bean.TableResultRoot;
 import com.timothy.webui.config.AjaxResult;
 import com.timothy.webui.service.DepartmentService;
-import com.timothy.webui.utils.MyUtils;
+import com.timothy.webui.utils.WebUIUtils;
 import com.timothy.webui.utils.RestTemplateClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Resource
     RestTemplateClient restTemplateClient;
+
+    private static final Logger logger = LoggerFactory.getLogger(DepartmentServiceImpl.class);
 
     public TableResultRoot<DepartmentTableJsonResult> ListDepartment(Integer typeId) {
         ParameterizedTypeReference<TableResultRoot<DepartmentTableJsonResult>> tableResultRootParameterizedTypeReference = new ParameterizedTypeReference<TableResultRoot<DepartmentTableJsonResult>>() {
@@ -51,6 +56,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         return null;
     }
 
+    /**
+     * @return
+     */
     @Override
     public AjaxResult InitDepartmentInfo() {
         Map<Integer, Integer> data = new HashMap<>();
@@ -61,7 +69,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 DepartmentInfo.setDepartmentInfo(i, departmentList.getGridModel());
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("sleep error", e);
                 return AjaxResult.toAjax("200", "error", null);
 
             }
@@ -74,24 +82,24 @@ public class DepartmentServiceImpl implements DepartmentService {
     //使用树形结构优化查找
     @Override
     public void CreateDepartmentBean(DepartmentBean departmentBean) {
-        if (MyUtils.isNotEmpty(departmentBean.getClassCode())) {
+        if (WebUIUtils.isNotEmpty(departmentBean.getClassCode())) {
             for (DepartmentTableJsonResult departmentTableJsonResult : DepartmentInfo.getDepartmentInfo(2)) {
-                if (departmentTableJsonResult.getCode().equals(departmentBean.getClassCode())) {
+                if (departmentTableJsonResult.getCode().trim().equals(departmentBean.getClassCode().trim())) {
                     departmentBean.setClassId(departmentTableJsonResult.getId());
-                    departmentBean.setMajorName(departmentTableJsonResult.getParentStr());
+                    departmentBean.setMajorName(departmentTableJsonResult.getParentStr().trim());
                     break;
                 }
             }
         }
         for (DepartmentTableJsonResult departmentTableJsonResult : DepartmentInfo.getDepartmentInfo(1)) {
-            if (departmentTableJsonResult.getName().equals(departmentBean.getMajorName())) {
+            if (departmentTableJsonResult.getName().trim().equals(departmentBean.getMajorName().trim())) {
                 departmentBean.setMajorId(departmentTableJsonResult.getId());
-                departmentBean.setFacultyName(departmentTableJsonResult.getParentStr());
+                departmentBean.setFacultyName(departmentTableJsonResult.getParentStr().trim());
                 break;
             }
         }
         for (DepartmentTableJsonResult departmentTableJsonResult : DepartmentInfo.getDepartmentInfo(0)) {
-            if (departmentTableJsonResult.getName().equals(departmentBean.getFacultyName())) {
+            if (departmentTableJsonResult.getName().trim().equals(departmentBean.getFacultyName())) {
                 departmentBean.setFacultyId(departmentTableJsonResult.getId());
                 break;
             }

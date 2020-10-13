@@ -7,8 +7,11 @@ import com.timothy.webui.bean.RoomInfo;
 import com.timothy.webui.config.RoomProperties;
 import com.timothy.webui.service.DepartmentService;
 import com.timothy.webui.service.RoomService;
+import com.timothy.webui.socketservice.WebSocketServer;
 import com.timothy.webui.utils.RestTemplateClient;
 import org.apache.poi.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,8 @@ public class RoomServiceImpl implements RoomService {
         return DataProvider(1).getTotal();
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(RoomServiceImpl.class);
+
     @Override
     public String AdjustMajor(List<String> beds, DepartmentBean departmentBean) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -49,7 +54,7 @@ public class RoomServiceImpl implements RoomService {
         if (departmentBean.getClassId() != null) {
             params.add("classId", String.valueOf(departmentBean.getClassId()));
         }
-        System.out.println("请求参数= " + params);
+        logger.info("AdjustMajor [{}]", params);
         return restTemplateClient.postForObjectDefault(roomProperties.getAdjustMajor(), params, String.class);
     }
 
@@ -78,8 +83,9 @@ public class RoomServiceImpl implements RoomService {
             assert body != null;
             RoomInfo.putRoomBean(body);
             return body;
+        } else {
+            return new TableResultRoot<>();
         }
-        return new TableResultRoot<>();
     }
 
     @Override
@@ -87,7 +93,7 @@ public class RoomServiceImpl implements RoomService {
         RoomInfo.destroy();
         TableResultRoot<RoomJSONResult> roomBean = this.DataProvider(0);
         RoomInfo.putRoomBean(roomBean);
-        System.out.println(RoomInfo.getRoomMap());
+        logger.info("房间信息初始化 \n {}", RoomInfo.getRoomMap());
         return roomBean.getRecords();
     }
 }

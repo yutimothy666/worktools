@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>vue</title>
+</head>
+<body>
+<div id="app-1">
+    <span v-bind:title="message">1</span>
+</div>
+<script src="/vue/vue.js" th:src="@{/vue/vue.js}"></script>
+<script>
+    var vue = new Vue({
+        el: '#app-1',
+        data: {
+            message: '页面加载于' + new Date().toLocaleString()
+        }
+    });
+</script>
+</body>
+</html>

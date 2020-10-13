@@ -1,6 +1,9 @@
 server:
   port: 80
 spring:
+  redis:
+    host: localhost
+    port: 6379
   profiles:
     active: dev
   application:
@@ -9,10 +12,21 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 100MB
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/worktools?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
 room:
+  baseUrl: https://yx.tsp189.com/xyyx
   schoolId: 158
-  cookiesId: 60E274808AE196EDE88BC319C62FA35E
-  dormAjustDataProvider: https://yx.tsp189.com/xyyx/dorm/dorm_ajust_data_provider.shtml?pid=&
+  cookiesId: F925A87B2F8453A5451E795436DA1754
+  dormAjustDataProvider: ${room.baseUrl}/dorm/dorm_ajust_data_provider.shtml?pid=&
   presortLevel: 0
-  adjustMajor: https://yx.tsp189.com/xyyx/dorm/adjust_major.shtml
-  adjustCancel: https://yx.tsp189.com/xyyx/dorm/adjust_cancel.shtml
+  adjustMajor: ${room.baseUrl}/dorm/adjust_major.shtml
+  adjustCancel: ${room.baseUrl}/dorm/adjust_cancel.shtml
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.timothy.webui.bean
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

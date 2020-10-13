@@ -1,8 +1,6 @@
 package com.timothy.webui.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -14,8 +12,24 @@ import java.util.StringJoiner;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@ToString
+@Setter
+@Getter
 public class RoomRecode {
     private String id;
     private Boolean isUse;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RoomRecode that = (RoomRecode) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

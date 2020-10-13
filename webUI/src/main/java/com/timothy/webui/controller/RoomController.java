@@ -1,6 +1,7 @@
 package com.timothy.webui.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.timothy.webui.Exception.RoomExcelException;
 import com.timothy.webui.bean.DepartmentBean;
 import com.timothy.webui.bean.DepartmentInfo;
 import com.timothy.webui.bean.RoomInfo;
@@ -11,21 +12,20 @@ import com.timothy.webui.excel.RoomExcel;
 import com.timothy.webui.excel.RoomExcelListener;
 import com.timothy.webui.service.DepartmentService;
 import com.timothy.webui.service.RoomService;
-import com.timothy.webui.utils.MyUtils;
+import com.timothy.webui.utils.WebUIUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.UnknownContentTypeException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @Description:
@@ -43,6 +43,8 @@ public class RoomController {
 
     @Resource
     WebCookiesInfo webCookiesInfo;
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @ResponseBody
     @GetMapping("list")
@@ -70,28 +72,52 @@ public class RoomController {
     @ResponseBody
     @PostMapping("/")
     public AjaxResult post(@RequestParam(value = "file", required = false) MultipartFile file, WebCookiesInfo info) throws
-            IOException, InterruptedException, UnknownContentTypeException, NullPointerException {
+            IOException, InterruptedException {
         webCookiesInfo.setAll(info);
         Integer changeRoomNum = 0;
+
+        logger.info("上传文件名-{}", file.getOriginalFilename());
+
         HashMap<String, Object> object = new HashMap<>();
-        System.out.println(file.getOriginalFilename());
+
         List<String> roomChangeDetail = new ArrayList<>();
         if (!file.isEmpty()) {
             object.put("msg", file.getOriginalFilename());
             EasyExcel.read(file.getInputStream(), RoomExcel.class, new RoomExcelListener()).sheet(0).doRead();
             List<RoomExcel> roomExcels = RoomInfo.getRoomExcels();
-            roomExcels.forEach(System.out::println);
+            roomExcels.forEach(item -> {
+                logger.info("xls info-{}", item);
+            });
+
+            logger.info("--开始初始化宿舍信息");
             roomService.initRoomInfo();
+            logger.info("--初始化宿舍信息完成");
+
+            logger.info("--开始初始化院系信息");
             departmentService.InitDepartmentInfo();
+            logger.info("--初始化院系班级信息完成");
+
+            logger.info("开始移动宿舍");
+            MultiValueMap<String, RoomRecode> roomMap = RoomInfo.getRoomMap();
+
+            ThreadLocal<Map<String, Boolean>> cacheRoomUseMap = new ThreadLocal<>();
+            cacheRoomUseMap.set(new HashMap<>());
             for (RoomExcel roomExcel : roomExcels) {
                 if (roomExcel.getRoomNum() - roomExcel.getRoomUsed() > 0) {
-                    List<RoomRecode> roomRecodes = RoomInfo.getRoomMap().get(roomExcel.getRoomName().trim());
+                    String roomNameKey = roomExcel.getRoomName().trim();
+
+                    List<RoomRecode> roomRecodes = roomMap.get(roomNameKey);
+                    roomRecodes.forEach(k -> {
+                        if (!cacheRoomUseMap.get().containsKey(k.getId())) {
+                            cacheRoomUseMap.get().put(k.getId(), false);
+                        }
+                    });
                     Integer getNum = 0;
                     ArrayList<String> roomList = new ArrayList<>();
                     for (RoomRecode roomRecode : roomRecodes) {
-                        if (!roomRecode.getIsUse()) {
+                        if (!cacheRoomUseMap.get().get(roomRecode.getId())) {
                             roomList.add(roomRecode.getId());
-                            roomRecode.setIsUse(true);
+                            cacheRoomUseMap.get().put(roomRecode.getId(), true);
                             getNum++;
                         }
                         if (getNum.equals(roomExcel.getRoomUsed())) {
@@ -99,25 +125,50 @@ public class RoomController {
                         }
                     }
                     Thread.sleep(200);
-
+                    ThreadLocal<Boolean> isPointer = new ThreadLocal<>();
+                    isPointer.set(false);
                     DepartmentBean departmentBean = new DepartmentBean();
-                    System.out.println("roomExcel.getClassCode() = " + roomExcel.getClassCode());
-                    System.out.println("roomExcel.getMajorName() = " + roomExcel.getMajorName());
-                    departmentBean.setClassCode(roomExcel.getClassCode().trim());
-                    departmentBean.setMajorName(roomExcel.getMajorName().trim());
-                    System.out.println("departmentBeanBefore = " + departmentBean);
+                    if (WebUIUtils.isNotEmpty(roomExcel.getClassCode())) {
+                        departmentBean.setClassCode(roomExcel.getClassCode().trim());
+                        isPointer.set(true);
+                    }
+                    if (WebUIUtils.isNotEmpty(roomExcel.getMajorName())) {
+                        departmentBean.setMajorName(roomExcel.getMajorName());
+                        isPointer.set(true);
+                    }
+                    if (!isPointer.get()) {
+                        throw new RoomExcelException();
+                    }
+                    logger.info("before{}", departmentBean);
                     departmentService.CreateDepartmentBean(departmentBean);//组装id
-                    System.out.println("departmentBeanAfter = " + departmentBean);
+                    logger.info("after{}", departmentBean);
 
                     String result = roomService.AdjustMajor(roomList, departmentBean);
                     String msg = roomExcel.getRoomName() + "移动了" + getNum + "间房间 " + "操作结果：" + result;
-                    System.out.println("msg = " + msg);
+                    logger.info(msg);
                     roomChangeDetail.add(msg);
                     changeRoomNum++;
                 }
             }
-            object.put("num", String.valueOf(changeRoomNum));
+            String msgAll = "一共移动了" + changeRoomNum + "个房间";
+            logger.info(msgAll);
+            roomChangeDetail.add(msgAll);
             object.put("detail", roomChangeDetail);
+            AtomicReference<Integer> cancelNum = new AtomicReference<>(0);
+            cacheRoomUseMap.get().forEach((k, v) -> {
+                logger.info("{}-{}", k, v);
+                if (!v) {
+                    roomService.AdjustCancel(Long.valueOf(k));
+                    logger.info("取消房间id-{}", k);
+                    cancelNum.getAndSet(cancelNum.get() + 1);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        logger.error("error", e);
+                    }
+                }
+            });
+            logger.info("取消房间总数-{}", cancelNum.get());
         } else {
             roomChangeDetail.add("test1");
             roomChangeDetail.add("test1");
@@ -160,7 +211,7 @@ public class RoomController {
     public AjaxResult department(@RequestParam(value = "classCode", required = false, defaultValue = "") String
                                          classCode, @RequestParam(value = "majorName", required = false, defaultValue = "") String majorName) {
         AjaxResult ajaxResult = departmentService.InitDepartmentInfo();
-        if (!MyUtils.isNotEmpty(classCode) && !MyUtils.isNotEmpty(majorName)) {
+        if (!WebUIUtils.isNotEmpty(classCode) && !WebUIUtils.isNotEmpty(majorName)) {
             return AjaxResult.success(DepartmentInfo.getDepartmentInfo());
         }
         DepartmentBean departmentBean = new DepartmentBean();

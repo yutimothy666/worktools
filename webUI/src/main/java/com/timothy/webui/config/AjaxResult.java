@@ -26,6 +26,10 @@ public class AjaxResult extends HashMap<String, Object> {
         return new AjaxResult(code, msg, data);
     }
 
+    public static AjaxResult toAjax(String code, String msg) {
+        return new AjaxResult(code, msg, null);
+    }
+
     public static AjaxResult success(Object data) {
         return toAjax("200", "msg", data);
     }

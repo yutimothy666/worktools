@@ -2,6 +2,7 @@ package com.timothy.webui.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.timothy.webui.config.AjaxResult;
+import com.timothy.webui.config.RoomProperties;
 import com.timothy.webui.config.WebCookiesInfo;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -25,6 +26,8 @@ public class RestTemplateClient {
 
     @Resource
     private WebCookiesInfo webCookiesInfo;
+    @Resource
+    private RoomProperties roomProperties;
 
     @Resource
     private RestTemplate restTemplate;
@@ -33,7 +36,9 @@ public class RestTemplateClient {
         HttpHeaders httpHeaders = new HttpHeaders();
         MediaType mediaType = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
         httpHeaders.setContentType(mediaType);
-        httpHeaders.add("Cookie", "JSESSIONID=" + webCookiesInfo.getCookiesId() + "; dormitory_login=false; collegeId=" + webCookiesInfo.getSchoolId());
+        String cookiesId = WebUIUtils.isNotEmpty(webCookiesInfo.getCookiesId()) ? webCookiesInfo.getCookiesId() : roomProperties.getCookiesId();
+        String collegeId = WebUIUtils.isNotEmpty(webCookiesInfo.getSchoolId()) ? webCookiesInfo.getSchoolId() : roomProperties.getSchoolId();
+        httpHeaders.add("Cookie", "JSESSIONID=" + cookiesId + "; dormitory_login=false; collegeId=" + collegeId);
         return new HttpEntity<>(params, httpHeaders);
     }
 
@@ -51,9 +56,11 @@ public class RestTemplateClient {
 
     public HttpEntity<MultiValueMap<String, String>> getDefaultHttpEntity(MultiValueMap<String, String> params) {
         HttpHeaders httpHeaders = new HttpHeaders();
+        String cookiesId = WebUIUtils.isNotEmpty(webCookiesInfo.getCookiesId()) ? webCookiesInfo.getCookiesId() : roomProperties.getCookiesId();
+        String collegeId = WebUIUtils.isNotEmpty(webCookiesInfo.getSchoolId()) ? webCookiesInfo.getSchoolId() : roomProperties.getSchoolId();
         MediaType mediaType = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
         httpHeaders.setContentType(mediaType);
-        httpHeaders.add("Cookie", "JSESSIONID=" + webCookiesInfo.getCookiesId() + "; dormitory_login=false; collegeId=" + webCookiesInfo.getSchoolId());
+        httpHeaders.add("Cookie", "JSESSIONID=" + cookiesId + "; dormitory_login=false; collegeId=" + collegeId);
         return new HttpEntity<>(params, httpHeaders);
     }
 }

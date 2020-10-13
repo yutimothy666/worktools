@@ -32,18 +32,15 @@ public class IndexController {
     @Resource
     RestTemplateClient restTemplateClient;
 
-    @Resource
-    RoomProperties roomProperties;
 
-
-    @RequestMapping(value = {"index", "", "/"})
+    @RequestMapping(value = {""})
     public String index(ModelMap modelMap) {
         modelMap.put("ok", "ok");
         return "index/index";
     }
 
     @ResponseBody
-    @GetMapping(value = "test")
+    @GetMapping(value = "test2")
     public void test(HttpServletResponse response, @RequestParam(value = "page", required = false, defaultValue = "1") String page) throws IOException {
         String url = "https://yx.tsp189.com/xyyx/dorm/dorm_ajust_data_provider.shtml?pid=&";
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
